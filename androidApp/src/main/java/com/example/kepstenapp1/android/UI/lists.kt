@@ -12,8 +12,10 @@ import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 //import androidx.compose.foundation.layout.BoxScopeInstance.align
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -42,11 +44,14 @@ fun mylist(
     heading: String = "Heading",
     mylist: MutableList<String> = mutableListOf("one", "two", "three", "four")
 ) {
-    Box(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(color = Color.White)) {
         Column(
             modifier = Modifier
                 .padding(all = 15.dp)
                 .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
                 ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -63,8 +68,10 @@ fun mylist(
             )
             Spacer(modifier = Modifier.height(80.dp))
             LazyColumn(
+
                 contentPadding = PaddingValues(all = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(40.dp)
+                verticalArrangement = Arrangement.spacedBy(40.dp),
+                modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 items(items = mylist) { data ->
                     listitem(data)
