@@ -33,10 +33,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
 
-                        mylist()
-                        //signinscreen()
-                        //splashscreen()
-                        //image()
+                        payment()
                 }
             }
         }
