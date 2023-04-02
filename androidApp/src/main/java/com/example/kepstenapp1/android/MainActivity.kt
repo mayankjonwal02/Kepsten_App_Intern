@@ -13,11 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import com.example.kepstenapp.android.UI.splashscreen
 import com.example.kepstenapp1.Greeting
-import com.example.kepstenapp1.android.UI.color
-import com.example.kepstenapp1.android.UI.image
-import com.example.kepstenapp1.android.UI.signinscreen
-import com.example.kepstenapp1.android.UI.signupscreen
-
+import com.example.kepstenapp1.android.UI.*
 
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +32,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
 
-                        signinscreen()
+
+                        mylist()
+                        //signinscreen()
                         //splashscreen()
                         //image()
                 }
