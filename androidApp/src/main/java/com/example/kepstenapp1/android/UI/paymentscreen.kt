@@ -95,14 +95,14 @@ fun payment(company:String = "Company name",service:String="Service name",amount
                 ,
 
 
-            backgroundColor = Color.White,
-            shape = RoundedCornerShape(20.dp)
+                backgroundColor = Color.White,
+                shape = RoundedCornerShape(20.dp)
             ) {
                 Column(modifier = Modifier
 
                     .padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(30.dp)) {
+                    verticalArrangement = Arrangement.spacedBy(30.dp)) {
 //                    Spacer(modifier = Modifier.height(5.dp))
                     Text(text = "Service : " + service, modifier = Modifier.fillMaxWidth(), style = TextStyle(fontFamily = FontFamily.Default, fontStyle = FontStyle.Normal, fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Start))
                     Text(text = "Company : " + company, modifier = Modifier.fillMaxWidth(), style = TextStyle(fontFamily = FontFamily.Default, fontStyle = FontStyle.Normal, fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Start))
@@ -111,7 +111,7 @@ fun payment(company:String = "Company name",service:String="Service name",amount
                     OutlinedButton(onClick = { /* Do something */ },
                         modifier = Modifier.padding(16.dp),
                         border = BorderStroke(1.dp,Color.Green)
-                            , colors = ButtonDefaults.buttonColors(
+                        , colors = ButtonDefaults.buttonColors(
 
                             backgroundColor = Color.Transparent,
                             contentColor = Color.Green,
@@ -122,6 +122,22 @@ fun payment(company:String = "Company name",service:String="Service name",amount
 
                     ) {
                         Text(text = "Make Payment", color = Color.Green, fontWeight = FontWeight.ExtraBold,)
+                    }
+//                    Spacer(modifier = Modifier.height(0.dp))
+                    OutlinedButton(onClick = { /* Do something */ },
+                        modifier = Modifier.padding(3.dp),
+                        border = BorderStroke(1.dp,Color.Green)
+                        , colors = ButtonDefaults.buttonColors(
+
+                            backgroundColor = Color.Transparent,
+                            contentColor = Color.Green,
+//                            disabledBackgroundColor = backgroundColor.copy(alpha = ContentAlpha.disabled),
+//                            disabledContentColor = Color.Green.copy(alpha = ContentAlpha.disabled),
+
+                        )
+
+                    ) {
+                        Text(text = "Door-Step Payment", color = Color.Green, fontWeight = FontWeight.ExtraBold,)
                     }
                 }
 
