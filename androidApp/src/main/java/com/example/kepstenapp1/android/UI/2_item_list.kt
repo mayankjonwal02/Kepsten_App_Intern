@@ -4,7 +4,6 @@ package com.example.kepstenapp1.android.UI
 
 import android.view.MotionEvent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,11 +29,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+data class twoitem(val item1: String, val item2:String)
+
 @Preview
 @Composable
-fun mylist(
+fun my2itemlist(
     heading: String = "Heading",
-    mylist: MutableList<String> = mutableListOf("one", "two", "three", "four")
+    mylist: MutableList<twoitem> = mutableListOf(
+        twoitem("mayank","jonwal"),
+        twoitem("hello","world")
+    )
+
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -43,15 +48,13 @@ fun mylist(
             modifier = Modifier
                 .padding(all = 15.dp)
                 .fillMaxHeight()
-//                .verticalScroll(rememberScrollState())
+
             ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = heading,
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(20.dp),
                 style = TextStyle(
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center,
@@ -60,14 +63,18 @@ fun mylist(
                     fontFamily = FontFamily.Monospace
                 )
             )
-            Spacer(modifier = Modifier.height(50.dp))
+            val a = mutableListOf("1","2","3","4")
+            Spacer(modifier = Modifier.height(80.dp))
             LazyColumn(
+
                 contentPadding = PaddingValues(all = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(40.dp),
-                modifier = Modifier.fillMaxHeight()
+
             ) {
-                items(items = mylist) { data ->
-                    listitem(data)
+                items(items = mylist) {
+                        data ->
+                    twolistitem(data)
+
                 }
             }
         }
@@ -76,10 +83,11 @@ fun mylist(
 
 
 
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
-fun listitem(text: String = "Item ")
+fun twolistitem(mylist:twoitem = twoitem("mayank","jonwal"))
 {
 
     var selected by  remember{
@@ -91,7 +99,7 @@ fun listitem(text: String = "Item ")
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth()
-            .shadow(13.dp, shape = RoundedCornerShape(20.dp),spotColor = Color.Green)
+            .shadow(13.dp, shape = RoundedCornerShape(20.dp), spotColor = Color.Green)
 
             .pointerInteropFilter { event ->
                 when (event.action) {
@@ -117,31 +125,28 @@ fun listitem(text: String = "Item ")
 
     ) {
 
-        Text(text = text , style = TextStyle( color = Color.Black , fontSize = 30.sp, textAlign = TextAlign.Center) ,
-            modifier = Modifier
-                .padding(10.dp)
-                .clickable { selected = !selected }
-            ,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Element at the start of the row
+            Text(
+                text = mylist.item1,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(20.dp)
+            )
 
-    }
-}
-
-
-@Preview
-@Composable
-fun lazycol()
-{
-    var sections = mutableListOf("A","B","C","D","E","F")
-    LazyColumn(contentPadding = PaddingValues(all = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp))
-    {
-        items(items = sections)
-        {
-                no -> listitem(no)
-            //lazycollayout(no = no)
+            // Element at the end of the row
+            Text(
+                text = mylist.item2,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(20.dp),
+                textAlign = TextAlign.End
+            )
         }
+
+
     }
-
 }
-

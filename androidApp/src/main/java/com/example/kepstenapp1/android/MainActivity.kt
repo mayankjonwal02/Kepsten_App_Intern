@@ -33,8 +33,10 @@ class MainActivity : ComponentActivity() {
                 ) {
 
 
-                        payment()
+                    my2itemlist()
+                    //mydata()
                 }
+
             }
         }
     }
