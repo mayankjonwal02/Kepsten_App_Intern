@@ -1,7 +1,5 @@
-package com.example.kepstenapp1.android.UI
+package com.example.kepstenapp1.android.USER_UI
 
-import android.graphics.Paint.Style
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.*
@@ -15,9 +13,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -28,8 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.kepstenapp1.android.R
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
-import java.lang.reflect.Array.get
 
 @Composable
 fun signinscreen(user:String = "user-type",key:Int = 1) {

@@ -1,14 +1,9 @@
-package com.example.kepstenapp1.android.UI
+package com.example.kepstenapp1.android.USER_UI
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -18,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.kepstenapp1.android.R
 //@Preview
