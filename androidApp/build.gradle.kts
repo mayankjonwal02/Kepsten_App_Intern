@@ -47,4 +47,16 @@ dependencies {
     implementation("androidx.compose.material:material:1.4.0")
     implementation("androidx.activity:activity-compose:1.7.0")
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
+
+    //extending design
+    implementation("androidx.compose.material:material-icons-extended:1.4.0")
+
+    // Material3 core library
+    implementation ("com.google.android.material3:material3:1.0.0-beta03")
+
+    // Material3 components library (optional)
+    implementation ("com.google.android.material3:material3-components:1.0.0-beta03")
+
+
+    implementation ("androidx.compose.material:material:1.1.0-alpha04")
 }
