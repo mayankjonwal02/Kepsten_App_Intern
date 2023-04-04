@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.kepstenapp1.android.COMPANY_UI.SearchScreen
 import com.example.kepstenapp1.android.USER_UI.*
 
 
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
 
-                    userinfo()
+                    SearchScreen()
                 }
 
             }
