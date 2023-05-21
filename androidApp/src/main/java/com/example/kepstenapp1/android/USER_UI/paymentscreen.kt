@@ -1,11 +1,8 @@
 package com.example.kepstenapp1.android.USER_UI
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 
 
@@ -21,6 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.kepstenapp1.android.navigation.screen
+
 
 //@Preview
 //@Composable
@@ -58,9 +58,14 @@ import androidx.compose.ui.unit.sp
 //}
 
 
-@Preview
+
 @Composable
-fun payment(company:String = "Company name",service:String="Service name",amount:Double=1000.0) {
+fun payment(
+    company: String = "Company name",
+    service: String = "Service name",
+    amount: Double = 1000.0,
+    navHostController: NavHostController
+) {
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -106,8 +111,9 @@ fun payment(company:String = "Company name",service:String="Service name",amount
                     Text(text = "Company : " + company, modifier = Modifier.fillMaxWidth(), style = TextStyle(fontFamily = FontFamily.Default, fontStyle = FontStyle.Normal, fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Start))
                     Text(text = "Price : $amount",modifier = Modifier.fillMaxWidth(),  style = TextStyle(fontFamily = FontFamily.Default, fontStyle = FontStyle.Normal, fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Start))
                     Spacer(modifier = Modifier.height(60.dp))
-                    OutlinedButton(onClick = { /* Do something */ },
-                        modifier = Modifier.padding(16.dp),
+                    OutlinedButton(onClick = { navHostController.navigate(screen.paymentdone.route) },
+                        modifier = Modifier.padding(16.dp)
+                            ,
                         border = BorderStroke(1.dp,Color.Green)
                         , colors = ButtonDefaults.buttonColors(
 
@@ -122,7 +128,7 @@ fun payment(company:String = "Company name",service:String="Service name",amount
                         Text(text = "Make Payment", color = Color.Green, fontWeight = FontWeight.ExtraBold,)
                     }
 //                    Spacer(modifier = Modifier.height(0.dp))
-                    OutlinedButton(onClick = { /* Do something */ },
+                    OutlinedButton(onClick = { navHostController.navigate(screen.ordersuccessful.route) },
                         modifier = Modifier.padding(3.dp),
                         border = BorderStroke(1.dp,Color.Green)
                         , colors = ButtonDefaults.buttonColors(

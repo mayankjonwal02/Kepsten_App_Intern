@@ -23,20 +23,23 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.kepstenapp1.android.navigation.screen
 
-data class twoitem(val item1: String, val item2:String)
+data class twoitem(val companyname: String, val cost: Double)
 
-@Preview
+
 @Composable
 fun my2itemlist(
     heading: String = "Heading",
     mylist: MutableList<twoitem> = mutableListOf(
-        twoitem("mayank","jonwal"),
-        twoitem("hello","world")
-    )
+        twoitem("mayank", 1223.4),
+        twoitem("hello", 134.6)
+    ),
+    service: String,
+    navHostController: NavHostController
 
 ) {
     Box(modifier = Modifier
@@ -71,7 +74,7 @@ fun my2itemlist(
             ) {
                 items(items = mylist) {
                         data ->
-                    twolistitem(data)
+                    twolistitem(data = data, service = service,navHostController)
 
                 }
             }
@@ -83,9 +86,13 @@ fun my2itemlist(
 
 
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview
+
 @Composable
-fun twolistitem(mylist:twoitem = twoitem("mayank","jonwal"))
+fun twolistitem(
+    data: twoitem = twoitem("mayank", 1254.6),
+    service: String,
+    navHostController: NavHostController
+)
 {
 
     var selected by  remember{
@@ -129,20 +136,26 @@ fun twolistitem(mylist:twoitem = twoitem("mayank","jonwal"))
         ) {
             // Element at the start of the row
             Text(
-                text = mylist.item1,
+                text = data.companyname,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(20.dp)
+                    .padding(20.dp),
+                fontWeight = FontWeight.ExtraBold
             )
 
             // Element at the end of the row
             Text(
-                text = mylist.item2,
+                text = "Price : "+data.cost.toString(),
                 modifier = Modifier
                     .weight(1f)
                     .padding(20.dp),
                 textAlign = TextAlign.End
             )
+
+            if (selected)
+            {
+                navHostController.navigate(screen.paymentdue.route+"/${service}/${data.companyname}/${data.cost.toString()}")
+            }
         }
 
 

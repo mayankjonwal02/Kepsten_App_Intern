@@ -9,8 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.kepstenapp.android.UI.splashscreen
 import com.example.kepstenapp1.android.USER_UI.*
+import com.example.kepstenapp1.android.navigation.navgraph
+import com.example.kepstenapp1.android.navigation.screen
 
 
 class MainActivity : ComponentActivity() {
@@ -29,6 +34,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    var navcontroller = rememberNavController()
+
+//                    navgraph(navHostController = navcontroller, context = LocalContext.current, start = screen.splashscreen.route)
+                    usermain()
 
 
 

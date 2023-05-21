@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 
 @Preview
 @Composable
@@ -85,7 +86,7 @@ fun mysecondlist(heading:String = "Heading") {
             LazyColumn(contentPadding = PaddingValues(all = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(sections) { item ->
-                    listitem(item)
+                    listitem(item, heading = "", navHostController = rememberNavController())
                 }
             }
 
@@ -103,7 +104,7 @@ fun mydata() {
     LazyColumn(contentPadding = PaddingValues(all = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)) {
         items(sections) { item ->
-            listitem(item)
+            listitem(item, heading = "", navHostController = rememberNavController())
         }
     }
 

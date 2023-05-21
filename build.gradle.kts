@@ -1,3 +1,8 @@
+buildscript {
+    dependencies {
+        classpath("com.google.gms:google-services:4.3.10")
+    }
+}
 dependencies {
     // Google Maps Platform for Android
     ("com.google.android.gms:play-services-maps:17.0.1")

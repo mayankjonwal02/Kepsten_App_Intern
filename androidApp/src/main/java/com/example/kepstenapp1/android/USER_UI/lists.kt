@@ -24,16 +24,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.kepstenapp1.android.navigation.screen
 
-@Preview
+
 @Composable
 fun mylist(
     heading: String = "Heading",
-    mylist: MutableList<String> = mutableListOf("one", "two", "three", "four")
-) {
+    mylistitems: MutableList<String> = mutableListOf("one", "two", "three", "four"),
+    navHostController: NavHostController
+
+    ) {
     Box(modifier = Modifier
         .fillMaxSize()
         .background(color = Color.White)) {
@@ -58,14 +62,16 @@ fun mylist(
                     fontFamily = FontFamily.Monospace
                 )
             )
+
+
             Spacer(modifier = Modifier.height(50.dp))
             LazyColumn(
                 contentPadding = PaddingValues(all = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(40.dp),
                 modifier = Modifier.fillMaxHeight()
             ) {
-                items(items = mylist) { data ->
-                    listitem(data)
+                items(items = mylistitems) { data ->
+                    listitem(text = data ,navHostController= navHostController, heading = heading)
                 }
             }
         }
@@ -75,9 +81,9 @@ fun mylist(
 
 
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview
+
 @Composable
-fun listitem(text: String = "Item ")
+fun listitem(text: String = "Item ", heading: String, navHostController: NavHostController)
 {
 
     var selected by  remember{
@@ -89,13 +95,15 @@ fun listitem(text: String = "Item ")
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth()
-            .shadow(13.dp, shape = RoundedCornerShape(20.dp),spotColor = Color.Green)
+            .clickable { }
+            .shadow(13.dp, shape = RoundedCornerShape(20.dp), spotColor = Color.Green)
 
             .pointerInteropFilter { event ->
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
                         selected = true
                         true
+
                     }
                     MotionEvent.ACTION_UP -> {
                         selected = false
@@ -109,6 +117,7 @@ fun listitem(text: String = "Item ")
         ,
         backgroundColor =  if (selected) {
             Color.Green
+
         } else {
             Color.White
         }
@@ -118,17 +127,27 @@ fun listitem(text: String = "Item ")
         Text(text = text , style = TextStyle( color = Color.Black , fontSize = 30.sp, textAlign = TextAlign.Center) ,
             modifier = Modifier
                 .padding(10.dp)
-                .clickable { selected = !selected }
+                .clickable { selected = !selected
+                           }
             ,
         )
+        if (selected)
+        {
+            when(heading)
+            {
+                "Select Services" -> navHostController.navigate(screen.companies.route+"/${text}")
+                "Select Brand" -> navHostController.navigate(screen.paymentdue.route)
+            }
+
+        }
 
     }
 }
 
 
-@Preview
+
 @Composable
-fun lazycol()
+fun lazycol(function: () -> Unit= {})
 {
     var sections = mutableListOf("A","B","C","D","E","F")
     LazyColumn(contentPadding = PaddingValues(all = 20.dp),
@@ -136,7 +155,7 @@ fun lazycol()
     {
         items(items = sections)
         {
-                no -> listitem(no)
+                no -> listitem(no, navHostController = rememberNavController(), heading = "")
             //lazycollayout(no = no)
         }
     }

@@ -13,8 +13,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.kepstenapp1.android.R
+import kotlinx.coroutines.delay
+import com.example.kepstenapp1.android.navigation.screen
+
+
 //@Preview
 //@OptIn(ExperimentalAnimationApi::class)
 //@Composable
@@ -65,9 +71,9 @@ import com.example.kepstenapp1.android.R
 //}
 
 
-
+//@Preview
 @Composable
-fun PaymentCompleteScreen() {
+fun PaymentCompleteScreen(navHostController: NavHostController) {
     var checkmarkVisible by remember { mutableStateOf(false) }
     val color by animateColorAsState(targetValue = Color.Green)
     val alpha by animateFloatAsState(targetValue = 1f)
@@ -98,6 +104,13 @@ fun PaymentCompleteScreen() {
             style = MaterialTheme.typography.body1,
             modifier = Modifier.padding(bottom = 24.dp)
         )
+
+        LaunchedEffect(Unit)
+        {
+            delay(3000)
+            navHostController.navigate(screen.ordersuccessful.route)
+        }
+
 
 
     }

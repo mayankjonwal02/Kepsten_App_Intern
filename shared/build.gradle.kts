@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.google.gms.google-services")
 }
 
 kotlin {
@@ -59,4 +60,11 @@ android {
         minSdk = 24
         targetSdk = 33
     }
+}
+dependencies {
+    // Navigation
+    implementation ("androidx.navigation:navigation-compose:2.4.0-alpha04")
+
+    debugImplementation( "androidx.compose.ui:ui-tooling:1.4.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.2")
 }

@@ -1,5 +1,6 @@
 package com.example.kepstenapp1.android.USER_UI
 
+import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.*
@@ -19,14 +20,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
 import com.example.kepstenapp1.android.R
+import com.example.kepstenapp1.android.navigation.screen
 
 @Composable
-fun signinscreen(user:String = "user-type",key:Int = 1) {
+fun signinscreen(
+    user: String = "user-type",
+    key: Int = 1,
+    context: Context,
+    navHostController: NavHostController
+) {
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -168,7 +175,7 @@ fun signinscreen(user:String = "user-type",key:Int = 1) {
                     }
                     if (key == 1) {
                         Spacer(modifier = Modifier.height(20.dp))
-                        TextButton(onClick = { /*TODO*/ }) {
+                        TextButton(onClick = { navHostController.navigate(screen.signupscreen.route+"/${user}") }) {
                             Text(text = "Not Registered Yet, Sign Up", fontWeight = FontWeight.Bold)
                         }
 
@@ -185,7 +192,11 @@ fun signinscreen(user:String = "user-type",key:Int = 1) {
 }
 
 @Composable
-fun signupscreen(user:String = "user-type") {
+fun signupscreen(
+    user: String = "user-type",
+    navHostController: NavHostController,
+    context: Context
+) {
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -355,10 +366,3 @@ fun signupscreen(user:String = "user-type") {
 val String.color
     get() = Color(android.graphics.Color.parseColor(this))
 
-@Preview
-@Composable
-fun signin_signuppreview() {
-
-    signinscreen()
-
-}

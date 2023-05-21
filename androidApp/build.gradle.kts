@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    //id("com.google.gms.google-services")
 }
 
 android {
@@ -46,17 +47,19 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.4.0")
     implementation("androidx.compose.material:material:1.4.0")
     implementation("androidx.activity:activity-compose:1.7.0")
-    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+   // implementation ("com.google.android.gms:play-services-maps:18.1.0")
 
     //extending design
     implementation("androidx.compose.material:material-icons-extended:1.4.0")
+    //implementation("com.google.firebase:firebase-auth-ktx:21.2.0")
+//    implementation("com.google.firebase:firebase-auth:21.0.3")
 
-    // Material3 core library
-    implementation ("com.google.android.material3:material3:1.0.0-beta03")
+    // Navigation
+    implementation ("androidx.navigation:navigation-compose:2.4.0-alpha04")
 
-    // Material3 components library (optional)
-    implementation ("com.google.android.material3:material3-components:1.0.0-beta03")
+    debugImplementation( "androidx.compose.ui:ui-tooling:1.4.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.2")
 
 
-    implementation ("androidx.compose.material:material:1.1.0-alpha04")
+
 }

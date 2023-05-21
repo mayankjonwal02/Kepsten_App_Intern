@@ -15,11 +15,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import com.example.kepstenapp1.android.USER_UI.listitem
 
+@Preview
 @Composable
 fun SearchScreen(heading:String = "Heading") {
     val items = listOf(
@@ -44,7 +46,9 @@ fun SearchScreen(heading:String = "Heading") {
 
     Column(modifier = Modifier.padding(16.dp)) {
         Spacer(modifier = Modifier.height(50.dp))
-        Text(text = heading, modifier = Modifier.fillMaxWidth().padding(20.dp)
+        Text(text = heading, modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)
             , style = TextStyle(fontStyle = FontStyle.Normal, fontWeight = FontWeight.ExtraBold, fontFamily = FontFamily.Monospace, fontSize = 40.sp))
         // Search bar
         Spacer(modifier = Modifier.height(50.dp))
@@ -84,7 +88,7 @@ fun SearchScreen(heading:String = "Heading") {
             ,
             verticalArrangement = Arrangement.spacedBy(40.dp),) {
             items(filteredItems) { item ->
-                listitem(item)
+                listitem(item, heading = "", navHostController = rememberNavController())
             }
         }
     }
