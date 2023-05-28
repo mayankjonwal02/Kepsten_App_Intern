@@ -1,6 +1,7 @@
 buildscript {
     dependencies {
-        classpath("com.google.gms:google-services:4.3.10")
+        classpath("com.google.gms:google-services:4.3.15")
+        classpath("com.android.tools.build:gradle:7.4.2")
     }
 }
 dependencies {
@@ -9,6 +10,7 @@ dependencies {
 
     // Google Maps Platform for iOS (optional)
     ("com.google.maps.ios:GoogleMaps:3.10.0")
+
 }
 
 plugins {
@@ -17,6 +19,7 @@ plugins {
     id("com.android.library").version("7.4.1").apply(false)
     kotlin("android").version("1.8.0").apply(false)
     kotlin("multiplatform").version("1.8.0").apply(false)
+    //id ("org.jetbrains.kotlin.android").version("1.6.21").apply(false)
 }
 
 tasks.register("clean", Delete::class) {

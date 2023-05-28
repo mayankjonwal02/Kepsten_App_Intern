@@ -113,7 +113,7 @@ fun payment(
                     Spacer(modifier = Modifier.height(60.dp))
                     OutlinedButton(onClick = { navHostController.navigate(screen.paymentdone.route) },
                         modifier = Modifier.padding(16.dp)
-                            ,
+                        ,
                         border = BorderStroke(1.dp,Color.Green)
                         , colors = ButtonDefaults.buttonColors(
 

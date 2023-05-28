@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -61,7 +62,10 @@ fun usermain() {
             drawerContent = {
                 userdrawerhead(navController)
                 userdrawerbody(navController)
+
             }
+        ,
+            drawerShape = RoundedCornerShape(30.dp)
 
 
 
@@ -118,7 +122,9 @@ fun userdrawerbody(navController: NavHostController) {
             .padding(10.dp)
             .fillMaxWidth()
 //            .height(10.dp)
-            .clickable {}
+            .clickable {
+                navController.navigate(screen.userpendingservices.route)
+            }
 
             .background(Color.Green)
             .padding(10.dp)
@@ -135,7 +141,7 @@ fun userdrawerbody(navController: NavHostController) {
             .padding(10.dp)
             .fillMaxWidth()
 //            .height(10.dp)
-            .clickable {}
+            .clickable { navController.navigate(screen.userpastservices.route)}
 
             .background(Color.Green)
             .padding(10.dp)

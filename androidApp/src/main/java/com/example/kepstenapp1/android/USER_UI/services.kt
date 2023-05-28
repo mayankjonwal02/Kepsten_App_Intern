@@ -2,7 +2,10 @@ package com.example.kepstenapp1.android.USER_UI
 
 
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,8 +13,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 //import androidx.compose.foundation.layout.BoxScopeInstance.align
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -29,15 +33,61 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.kepstenapp1.android.navigation.screen
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun mylist(
     heading: String = "Heading",
-    mylistitems: MutableList<String> = mutableListOf("one", "two", "three", "four"),
-    navHostController: NavHostController
+//    mylistitems: List<String> = mutableListOf(),
+    navHostController: NavHostController,
+    context: Context
 
     ) {
+    var mylistitems = remember { mutableStateListOf<String?>() }
+    var filteredItems = remember { mutableStateListOf<String?>() }
+    var tosearch by remember { mutableStateOf("") }
+
+// Filter the list of items based on the search query
+    if (tosearch.isNotBlank()) {
+        filteredItems.clear()
+        filteredItems.addAll(
+            rememberUpdatedState(
+                mylistitems.filter { it?.lowercase()?.startsWith(tosearch.lowercase()) == true }
+                    .sortedBy { it?.lowercase() }
+            ).value
+        )
+    } else {
+        filteredItems = mylistitems
+    }
+
+
+
+    FirebaseDatabase.getInstance().reference.child("services").addValueEventListener(object : ValueEventListener{
+        override fun onDataChange(snapshot: DataSnapshot) {
+            if(snapshot.exists())
+            {
+                mylistitems.clear()
+                 for( i in snapshot.children)
+                 {
+                     mylistitems.add(i.getKey().toString()!!)
+                 }
+            }
+            else
+            {
+                Toast.makeText(context,"No Services",Toast.LENGTH_LONG).show()
+            }
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            TODO("Not yet implemented")
+        }
+
+    })
     Box(modifier = Modifier
         .fillMaxSize()
         .background(color = Color.White)) {
@@ -62,6 +112,36 @@ fun mylist(
                     fontFamily = FontFamily.Monospace
                 )
             )
+            Spacer(modifier = Modifier.height(40.dp))
+            TextField(
+                value = tosearch,
+                onValueChange = { tosearch = it  },
+                label = { Text("Search ") },
+//            placeholder = { Text("Enter your Address") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(9.dp, RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(20.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.White,
+                    cursorColor = Color.Black,
+                    focusedLabelColor = Color.Black,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent
+
+                )
+                ,
+                leadingIcon = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Filled.Search, contentDescription = "search icon ")
+
+                    }
+                }
+
+            )
+
+            // Elements below the search bar
+            Spacer(modifier = Modifier.height(16.dp))
 
 
             Spacer(modifier = Modifier.height(50.dp))
@@ -70,8 +150,10 @@ fun mylist(
                 verticalArrangement = Arrangement.spacedBy(40.dp),
                 modifier = Modifier.fillMaxHeight()
             ) {
-                items(items = mylistitems) { data ->
-                    listitem(text = data ,navHostController= navHostController, heading = heading)
+                items(items = filteredItems) { data ->
+                    if (data != null) {
+                        listitem(text = data ,navHostController= navHostController, heading = heading)
+                    }
                 }
             }
         }

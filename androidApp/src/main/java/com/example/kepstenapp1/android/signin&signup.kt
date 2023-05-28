@@ -1,14 +1,13 @@
 package com.example.kepstenapp1.android.USER_UI
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -26,6 +25,29 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.example.kepstenapp1.android.R
 import com.example.kepstenapp1.android.navigation.screen
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import com.example.kepstenapp1.android.functions.signinnavigation
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import rememberFirebaseAuthLauncher
+
 
 @Composable
 fun signinscreen(
@@ -34,6 +56,20 @@ fun signinscreen(
     context: Context,
     navHostController: NavHostController
 ) {
+    var passwordVisibility by remember { mutableStateOf(false) }
+    var googlesign by remember {
+        mutableStateOf(false)
+    }
+
+    var useri by remember { mutableStateOf(Firebase.auth.currentUser) }
+    var launcher = rememberFirebaseAuthLauncher(onAuthComplete = { result ->
+        useri = result.user
+    }, onAuthError = {
+        useri = null
+    }, context, user , navHostController )
+    val token = stringResource(R.string.default_web_client_id)
+
+
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -67,11 +103,11 @@ fun signinscreen(
                     .alpha(0.7f)
             )
             Spacer(modifier = Modifier.height(30.dp))
-            var email = remember {
+            var email by remember {
                 mutableStateOf("")
             }
 
-            var password = remember {
+            var password by remember {
                 mutableStateOf("")
             }
 
@@ -111,10 +147,11 @@ fun signinscreen(
                         )
                     )
                     Spacer(modifier = Modifier.height(40.dp))
-                    OutlinedTextField(value = email.value, onValueChange = {
-                        email.value = it
+                    OutlinedTextField(value = email, onValueChange = {
+                        email = it
 
                     },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         label = {
                             Text(text = "Email")
                         },
@@ -128,8 +165,8 @@ fun signinscreen(
                     Spacer(modifier = Modifier.height(20.dp))
 
 
-                    OutlinedTextField(value = password.value, onValueChange = {
-                        password.value = it
+                    OutlinedTextField(value = password, onValueChange = {
+                        password = it
 
                     },
                         label = {
@@ -140,7 +177,25 @@ fun signinscreen(
                         ),
                         placeholder = {
                             Text(text = "Type your Password")
-                        })
+
+
+                        }
+                    ,
+                        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { passwordVisibility = !passwordVisibility },
+                                content = {
+                                    Icon(
+                                        imageVector = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                        contentDescription = if (passwordVisibility) "Hide password" else "Show password"
+                                    )
+                                }
+                            )
+                        }
+
+                    )
                     Spacer(modifier = Modifier.height(40.dp))
                     Row(
                         Modifier
@@ -150,26 +205,63 @@ fun signinscreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedButton(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                if (email != "" && password != "")
+                                { CoroutineScope(Dispatchers.IO).launch {
+                                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password).addOnCompleteListener {
+                                        it -> if(it.isSuccessful)
+                                    {
+                                        signinnavigation(navHostController,user, context)
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(context," Error",Toast.LENGTH_LONG).show()
+                                    }
+                                    }
+                                }
+                                }
+                                else {
+                                    Toast.makeText(context, "Fields Empty", Toast.LENGTH_LONG)
+                                        .show()
+                                }
+                             },
                             border = BorderStroke(1.dp, "#008000".color),
                             modifier = Modifier.padding(5.dp)
                         ) {
                             Text(text = "Sign In", color = "#008000".color)
 
                         }
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(text = "or", color = Color.Black)
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.google_logoq),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .height(60.dp)
-                                .width(60.dp)
-                                .shadow(elevation = 20.dp, shape = RoundedCornerShape(20.dp))
+                        if(key == 1)
+                        {
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(text = "or", color = Color.Black)
+                            Spacer(modifier = Modifier.width(10.dp))
 
-                                .clip(RoundedCornerShape(20.dp)),
-                        )
+                            Image(
+                                painter = painterResource(id = R.drawable.google_logoq),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .height(60.dp)
+                                    .width(60.dp)
+                                    .shadow(elevation = 20.dp, shape = RoundedCornerShape(20.dp))
+                                    .clickable {
+
+
+                                        val gso =
+                                            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                                .requestIdToken(token)
+                                                .requestEmail()
+                                                .build()
+                                        val googleSignInClient =
+                                            GoogleSignIn.getClient(context, gso)
+                                        launcher.launch(googleSignInClient.signInIntent)
+                                    }
+                                    .clip(RoundedCornerShape(20.dp)),
+                            )
+
+                        }
+
+//                        Image(painter = painterResource(com.example.kepstenapp1.android.R.drawable.google_logoq), contentDescription = "")
 
 
                     }
@@ -188,9 +280,17 @@ fun signinscreen(
             Spacer(modifier = Modifier.height(30.dp))
         }
     }
+    if(googlesign)
+    {
+
+
+////        val context = LocalContext.current
+
+    }
 
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun signupscreen(
     user: String = "user-type",
@@ -233,16 +333,23 @@ fun signupscreen(
                 textAlign = TextAlign.Center
 
             )
-            var email = remember {
+            var email by remember {
                 mutableStateOf("")
             }
 
-            var password = remember {
+            var password by remember {
                 mutableStateOf("")
             }
 
-            var repassword = remember {
+            var repassword by remember {
                 mutableStateOf("")
+            }
+            var passwordVisibility by remember {
+                mutableStateOf(false)
+            }
+
+            var passwordVisibility1 by remember {
+                mutableStateOf(false)
             }
             Spacer(modifier = Modifier.height(30.dp))
             Card(
@@ -282,8 +389,8 @@ fun signupscreen(
                         )
                     )
                     Spacer(modifier = Modifier.height(40.dp))
-                    OutlinedTextField(value = email.value, onValueChange = {
-                        email.value = it
+                    OutlinedTextField(value = email, onValueChange = {
+                        email = it
 
                     },
                         label = {
@@ -295,12 +402,13 @@ fun signupscreen(
                             ),
                         placeholder = {
                             Text(text = "Type your Email")
-                        })
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),)
                     Spacer(modifier = Modifier.height(20.dp))
 
 
-                    OutlinedTextField(value = password.value, onValueChange = {
-                        password.value = it
+                    OutlinedTextField(value = password, onValueChange = {
+                        password = it
 
                     },
                         label = {
@@ -311,12 +419,28 @@ fun signupscreen(
                         ),
                         placeholder = {
                             Text(text = "Type your Password")
-                        })
+                        },
+                        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { passwordVisibility = !passwordVisibility },
+                                content = {
+                                    Icon(
+                                        imageVector = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                        contentDescription = if (passwordVisibility) "Hide password" else "Show password"
+                                    )
+                                }
+                            )
+                        }
+                    )
                     Spacer(modifier = Modifier.height(20.dp))
 
-
-                    OutlinedTextField(value = repassword.value, onValueChange = {
-                        password.value = it
+                    var created by remember {
+                        mutableStateOf(false)
+                    }
+                    OutlinedTextField(value = repassword, onValueChange = {
+                        repassword = it
 
                     },
                         label = {
@@ -327,8 +451,25 @@ fun signupscreen(
                         ),
                         placeholder = {
                             Text(text = "Re-Type your Password")
-                        })
+                        },
+                        visualTransformation = if (passwordVisibility1) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { passwordVisibility1 = !passwordVisibility1 },
+                                content = {
+                                    Icon(
+                                        imageVector = if (passwordVisibility1) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                        contentDescription = if (passwordVisibility1) "Hide password" else "Show password"
+                                    )
+                                }
+                            )
+                        }
+                    )
                     Spacer(modifier = Modifier.height(40.dp))
+
+                    var data1 : String = email
+
                     Row(
                         Modifier
                             .wrapContentSize()
@@ -337,14 +478,43 @@ fun signupscreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedButton(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+
+
+                                if (email.isNotBlank() && password.isNotBlank() && repassword.isNotBlank()) {
+                                    if (password == repassword) {
+                                        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                                            .addOnCompleteListener { task ->
+                                                if (task.isSuccessful) {
+                                                    Toast.makeText(context,"Registered",Toast.LENGTH_LONG).show()
+
+                                                    created = true
+                                                } else {
+                                                    Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                                                }
+                                            }
+                                    } else {
+                                        Toast.makeText(context, "Password Mismatch", Toast.LENGTH_LONG).show()
+                                    }
+                                } else {
+                                    Toast.makeText(context, "Fields Empty", Toast.LENGTH_LONG).show()
+                                }
+                            },
                             border = BorderStroke(1.dp, "#008000".color),
                             modifier = Modifier.padding(5.dp)
                         ) {
                             Text(text = "Sign Up", color = "#008000".color)
 
+
                         }
 
+
+
+                    }
+                    if (created)
+                    {
+                        var ref = FirebaseDatabase.getInstance().reference.child("users")
+                            ref.child(FirebaseAuth.getInstance().currentUser?.uid.toString()).child("category").setValue(user)
 
                     }
 

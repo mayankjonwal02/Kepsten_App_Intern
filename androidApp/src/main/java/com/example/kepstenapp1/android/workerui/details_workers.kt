@@ -1,4 +1,4 @@
-package com.example.kepstenapp1.android.USER_UI
+package com.example.kepstenapp1.android.workerui
 
 import android.content.Context
 import android.widget.Space
@@ -31,11 +31,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 @Composable
-fun userinfo(context: Context) {
+fun Workerinfo(context: Context,workeruid : String = "zafaraiyar") {
 
     var name by remember {
         mutableStateOf("")
@@ -58,12 +61,29 @@ fun userinfo(context: Context) {
     var address by remember {
         mutableStateOf("")
     }
+    var databaseref = FirebaseDatabase.getInstance().reference.child("workers").child(workeruid)
+
+    val addValueEventListener = databaseref.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            name = snapshot.child("name").value.toString()
+            contact = snapshot.child("contact").value.toString()
+            email = workeruid
+            locality = snapshot.child("locality").value.toString()
+            state = snapshot.child("state").value.toString()
+            address = snapshot.child("address").value.toString()
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Toast.makeText(context,error.message.toString(),Toast.LENGTH_LONG).show()
+        }
+    })
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     )
+
     {
 
         Column(
@@ -95,7 +115,8 @@ fun userinfo(context: Context) {
             ) {
                 OutlinedTextField(
                     value = name,
-                    onValueChange = {name = it},
+                    readOnly = true,
+                    onValueChange = {},
                     label = { Text("User Name") },
                     maxLines = 1,
                     singleLine = true,
@@ -105,6 +126,7 @@ fun userinfo(context: Context) {
 
                         }
                     },
+
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
@@ -118,7 +140,7 @@ fun userinfo(context: Context) {
 
                     )
 
-                
+
 
 
             }
@@ -133,7 +155,8 @@ fun userinfo(context: Context) {
             ) {
                 OutlinedTextField(
                     value = contact,
-                    onValueChange = {contact = it },
+                    onValueChange = {contact = it},
+
                     label = { Text("Contact Number") },
                     placeholder = { Text("Enter your contact number") },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
@@ -168,7 +191,8 @@ fun userinfo(context: Context) {
             ) {
                 OutlinedTextField(
                     value = email,
-                    onValueChange = {email = it},
+                    readOnly = true,
+                    onValueChange = {},
                     label = { Text("Email") },
                     placeholder = { Text("Enter email address") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -299,14 +323,14 @@ fun userinfo(context: Context) {
 
         // update button
         Text(
-            text = "USER INFO",
+            text = "Worker's Info",
             modifier = Modifier
 
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
                 .padding(50.dp)
                 .background(Color.White)
-                ,
+            ,
             style = TextStyle(
                 color = Color.Black,
                 fontSize = 40.sp,
@@ -325,16 +349,23 @@ fun userinfo(context: Context) {
                 if(name.isNotBlank() && contact.isNotBlank() && email.isNotBlank() && locality.isNotBlank() && state.isNotBlank() && address.isNotBlank())
                 {
                     text = "Save"
-                    var data = clientdata(name, contact.toString(), email, locality, state, address)
-                    FirebaseDatabase.getInstance().reference.child("users")
-                        .child(FirebaseAuth.getInstance().currentUser?.uid.toString())
-                        .setValue(data)
+                    var data = workerselfdata(name, contact.toString(), email, locality, state, address)
+                    FirebaseDatabase.getInstance().reference.child("workers")
+                        .child(workeruid).child("state")
+                        .setValue(data.state)
+                    FirebaseDatabase.getInstance().reference.child("workers")
+                        .child(workeruid).child("locality")
+                        .setValue(data.locality)
+                    FirebaseDatabase.getInstance().reference.child("workers")
+                        .child(workeruid).child("address")
+                        .setValue(data.address)
+                    Toast.makeText(context,"Data Updated",Toast.LENGTH_LONG).show()
                 }
-                      else
+                else
                 {
                     Toast.makeText(context,"Fields Empty",Toast.LENGTH_LONG).show()
                 }}
-                    ,
+            ,
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .padding(16.dp)
@@ -354,4 +385,4 @@ fun userinfo(context: Context) {
     }
 }
 
-data class clientdata(var name : String , var contact : String , var email : String , var locality : String , var state : String , var address : String )
+data class workerselfdata(var name : String , var contact : String , var email : String , var locality : String , var state : String , var address : String )

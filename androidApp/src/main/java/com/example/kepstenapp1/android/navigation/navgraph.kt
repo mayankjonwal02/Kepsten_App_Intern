@@ -1,14 +1,22 @@
 package com.example.kepstenapp1.android.navigation
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.kepstenapp.android.UI.splashscreen
+import com.example.kepstenapp1.android.COMPANY_UI.*
 import com.example.kepstenapp1.android.USER_UI.*
 import com.example.kepstenapp1.android.way
+import com.example.kepstenapp1.android.workerui.Workerinfo
+import com.example.kepstenapp1.android.workerui.requestlist
+import com.example.kepstenapp1.android.workerui.workermain
+import workerpendingservices
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun navgraph(navHostController: NavHostController,context: Context,start : String ) {
 
@@ -49,7 +57,7 @@ fun navgraph(navHostController: NavHostController,context: Context,start : Strin
         {
 
 
-                mylist(heading = "Select Services",navHostController=navHostController)
+                mylist(heading = "Select Services",navHostController=navHostController,context = context)
 
 
 
@@ -96,7 +104,82 @@ fun navgraph(navHostController: NavHostController,context: Context,start : Strin
 
         composable(screen.userinfo.route)
         {
-            userinfo()
+            userinfo(context)
+        }
+
+        composable(screen.addworkers.route)
+        {
+            addworker()
+        }
+
+        composable(screen.addslots.route)
+        {
+            addslots(context = context)
+        }
+
+        composable(screen.pendingservices.route)
+        {
+
+        }
+
+        composable(screen.workerdetails.route)
+        {
+
+        }
+
+        composable(screen.companymain.route)
+        {
+            companymain()
+        }
+
+        composable(screen.usermain.route)
+        {
+            usermain()
+        }
+
+        composable(screen.workermain.route)
+        {
+            workermain()
+        }
+
+        composable(screen.userpastservices.route)
+        {
+            pastservices()
+        }
+
+        composable(screen.userpendingservices.route)
+        {
+            pendingservices()
+        }
+
+        composable(screen.companydetails.route)
+        {
+            companydetails(context = context)
+        }
+
+        composable(screen.companypendingservice.route)
+        {
+            companypendingservices()
+        }
+
+        composable(screen.companyworkerlist.route)
+        {
+            companyworkerdatalist()
+        }
+        
+        composable(screen.workerselfinfo.route)
+        {
+            Workerinfo(context = context)
+        }
+
+        composable(screen.workerrequestdata.route)
+        {
+            requestlist()
+        }
+
+        composable(screen.workerpendingrequest.route)
+        {
+            workerpendingservices()
         }
 
 

@@ -1,5 +1,7 @@
 package com.example.kepstenapp1.android.COMPANY_UI
 
+import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -7,12 +9,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -22,11 +25,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
+@SuppressLint("SuspiciousIndentation")
 @Preview
 @Composable
 fun addworker() {
+    var context = LocalContext.current
+
+    var name by remember {
+        mutableStateOf("")
+    }
+     var uid by remember {
+         mutableStateOf("")
+     }
+    var contact by remember{
+        mutableStateOf("")
+    }
+    var password by remember {
+        mutableStateOf("")
+    }
     Box(
         modifier = Modifier
             .alpha(0.3f)
@@ -47,8 +70,8 @@ fun addworker() {
 
             Spacer(modifier = Modifier.height(30.dp))
             OutlinedTextField(
-                value = "",
-                onValueChange = { },
+                value = name,
+                onValueChange = {name = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -68,15 +91,18 @@ fun addworker() {
             // copy from here
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedTextField(
-                value = "",
-                onValueChange = { },
+                value = uid
+                ,
+                onValueChange = {  uid = it},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
                     .background(Color.White),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
 
                 placeholder = { Text(text = "Enter worker's UID") },
                 label = { Text(text = "Worker UID") },
+
 
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Green,
@@ -88,8 +114,8 @@ fun addworker() {
             )
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedTextField(
-                value = "",
-                onValueChange = { },
+                value = contact,
+                onValueChange = { contact = it},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -111,8 +137,8 @@ fun addworker() {
             )
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedTextField(
-                value = "",
-                onValueChange = { },
+                value = password,
+                onValueChange = { password = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
@@ -131,7 +157,37 @@ fun addworker() {
             )
             Spacer(modifier = Modifier.height(50.dp))
             Button(
-                onClick = {},
+                onClick = {
+                    uid = uid.replace("\\s".toRegex(), "")
+                          if(name.isNotBlank() && uid.replace("\\s".toRegex(), "").isNotBlank() && contact.isNotBlank() && password.isNotBlank())
+                          {
+
+                              FirebaseDatabase.getInstance().reference.child("workers").child(uid.replace("\\s".toRegex(), "")).addListenerForSingleValueEvent(object :ValueEventListener{
+                                  override fun onDataChange(snapshot: DataSnapshot) {
+                                      if(!snapshot.exists())
+                                      {
+                                          FirebaseDatabase.getInstance().reference.child("workers").child(uid).setValue(workerdata(name, contact,password,FirebaseAuth.getInstance().currentUser?.uid.toString()))
+                                          Toast.makeText(context,"$name added",Toast.LENGTH_LONG).show()
+                                      }
+                                      else{
+                                          Toast.makeText(context,"$uid already exist",Toast.LENGTH_LONG).show()
+                                      }
+                                  }
+
+                                  override fun onCancelled(error: DatabaseError) {
+                                      Toast.makeText(context, "Database error: ${error.message}", Toast.LENGTH_LONG).show()
+
+                                  }
+
+                              })
+
+                               }
+                    else
+                          {
+                              Toast.makeText(context ,"Fields Empty", Toast.LENGTH_LONG ).show()
+
+                          }
+                },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.Magenta,
                     contentColor = Color.White
@@ -144,7 +200,36 @@ fun addworker() {
             }
 
             Button(
-                onClick = {},
+                onClick = {
+                    uid = uid.replace("\\s".toRegex(), "")
+                    if(name.isNotBlank() && uid.replace("\\s".toRegex(), "").isNotBlank() && contact.isNotBlank() && password.isNotBlank()) {
+
+                        FirebaseDatabase.getInstance().reference.child("workers").child(uid.replace("\\s".toRegex(), "")).addListenerForSingleValueEvent(object :ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if(snapshot.exists())
+                                {
+                                    FirebaseDatabase.getInstance().reference.child("workers").child(uid).setValue(workerdata(name, contact,password,FirebaseAuth.getInstance().currentUser?.uid.toString()))
+                                    Toast.makeText(context,"$name's data updated'",Toast.LENGTH_LONG).show()
+                                }
+                                else{
+                                    Toast.makeText(context,"$uid doesn't exist",Toast.LENGTH_LONG).show()
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+
+                        })
+
+                    }
+                    else
+                    {
+                        Toast.makeText(context ,"Fields Empty", Toast.LENGTH_LONG ).show()
+                    }
+
+
+                },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.Magenta,
                     contentColor = Color.White
@@ -157,7 +242,34 @@ fun addworker() {
             }
 
             Button(
-                onClick = {},
+                onClick = {
+                    uid = uid.replace("\\s".toRegex(), "")
+                    if( uid.isNotBlank() )
+                    {
+                        FirebaseDatabase.getInstance().reference.child("workers").child(uid).addListenerForSingleValueEvent(object :ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if(snapshot.exists())
+                                {
+                                    FirebaseDatabase.getInstance().reference.child("workers").child(uid).removeValue()
+                                    Toast.makeText(context,"$name deleted",Toast.LENGTH_LONG).show()
+                                }
+                                else{
+                                    Toast.makeText(context,"$uid doesn't exist",Toast.LENGTH_LONG).show()
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+
+                        })
+
+                    }
+                    else
+                    {
+                        Toast.makeText(context ,"Fields Empty", Toast.LENGTH_LONG ).show()
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.Magenta,
                     contentColor = Color.White
@@ -173,3 +285,5 @@ fun addworker() {
         }
     }
 }
+
+data class workerdata(var name : String , var contact : String  , var password : String,var companyuid :  String)

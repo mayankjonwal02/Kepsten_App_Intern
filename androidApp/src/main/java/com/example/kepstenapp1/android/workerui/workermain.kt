@@ -1,18 +1,16 @@
-package com.example.kepstenapp1.android.COMPANY_UI
+package com.example.kepstenapp1.android.workerui
 
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.Composable
+
 
 //package com.example./.android.USER_UI
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -23,9 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -41,12 +37,13 @@ import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Preview
+
 @Composable
-fun companymain() {
+fun workermain(workerid : String = "zafaraiyar")  {
     var navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
     var scaffoldState = rememberScaffoldState()
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
         ,
@@ -55,7 +52,7 @@ fun companymain() {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Kepsten",
+                        text ="Kepsten",
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
@@ -73,8 +70,8 @@ fun companymain() {
             )
         },
         drawerContent = {
-            companydrawerhead(navController)
-            companydrawerbody(navController)
+           workerdrawerhead(navController,workerid)
+            workerdrawerbody(navController)
 
         }
         ,
@@ -94,7 +91,23 @@ fun companymain() {
 
 
 @Composable
-fun companydrawerhead(navController: NavHostController) {
+fun workerdrawerhead(navController: NavHostController, workerid: String) {
+    var myname by remember {
+        mutableStateOf("Default")
+    }
+    FirebaseDatabase.getInstance().reference.child("workers").child(workerid).child("name").addValueEventListener(object :ValueEventListener{
+        override fun onDataChange(snapshot: DataSnapshot) {
+
+            myname = snapshot.value.toString()
+
+
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            myname = error.message.toString()
+        }
+
+    })
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -103,35 +116,23 @@ fun companydrawerhead(navController: NavHostController) {
         contentAlignment = Alignment.Center)
     {
         Card(modifier = Modifier.padding(vertical = 30.dp, horizontal = 20.dp),
-        shape = RoundedCornerShape(20.dp),
-        backgroundColor = Color.Green) {
-            
+            shape = RoundedCornerShape(20.dp),
+            backgroundColor = Color.Green) {
+
             Box(modifier = Modifier.padding(30.dp),
-            contentAlignment = Alignment.Center)
+                contentAlignment = Alignment.Center)
             {
-                var companyname by remember {
-                    mutableStateOf("")
-                }
-                FirebaseDatabase.getInstance().reference.child("companies").child(FirebaseAuth.getInstance().currentUser?.uid.toString()).child("companyname").addValueEventListener(object :ValueEventListener{
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        companyname = snapshot.value.toString().toUpperCase()
-                    }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        companyname = error.message.toString()
-                    }
-
-                })
-                Text(text = companyname , style = TextStyle(fontSize = 30.sp))
+                Text(text = myname , style = TextStyle(fontSize = 30.sp))
             }
-            
+
         }
     }
 }
 
 //@Preview
 @Composable
-fun companydrawerbody(navController: NavHostController) {
+fun workerdrawerbody(navController: NavHostController) {
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -141,7 +142,7 @@ fun companydrawerbody(navController: NavHostController) {
             .padding(10.dp)
             .fillMaxWidth()
 //            .height(10.dp)
-            .clickable { navController.navigate(screen.addslots.route) }
+            .clickable { navController.navigate(screen.workerrequestdata.route) }
 
             .background(Color.Green)
             .padding(10.dp)
@@ -150,7 +151,7 @@ fun companydrawerbody(navController: NavHostController) {
 
             Icon(imageVector = Icons.Filled.AccessTime, contentDescription = "")
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "Edit Slots", modifier = Modifier.weight(1f))
+            Text(text = "Requests", modifier = Modifier.weight(1f))
 
         }
         Spacer(modifier = Modifier.height(6.dp))
@@ -159,7 +160,7 @@ fun companydrawerbody(navController: NavHostController) {
             .fillMaxWidth()
 //            .height(10.dp)
             .clickable {
-                navController.navigate(screen.addworkers.route)
+                navController.navigate(screen.workerpendingrequest.route)
             }
 
             .background(Color.Green)
@@ -167,25 +168,7 @@ fun companydrawerbody(navController: NavHostController) {
             ,
         ) {
 
-            Icon(imageVector = Icons.Default.AssignmentInd, contentDescription = "")
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "Update Workers Data", modifier = Modifier.weight(1f))
-
-        }
-        Spacer(modifier = Modifier.height(6.dp))
-        Row(modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth()
-//            .height(10.dp)
-            .clickable { navController.navigate(screen.companypendingservice.route) }
-
-            .background(Color.Green)
-            .padding(10.dp)
-
-            ,
-        ) {
-
-            Icon(imageVector = Icons.Filled.CallMissed, contentDescription = "")
+            Icon(imageVector = Icons.Default.CallMissed, contentDescription = "")
             Spacer(modifier = Modifier.width(16.dp))
             Text(text = "Pending Services", modifier = Modifier.weight(1f))
 
@@ -195,35 +178,23 @@ fun companydrawerbody(navController: NavHostController) {
             .padding(10.dp)
             .fillMaxWidth()
 //            .height(10.dp)
-            .clickable { navController.navigate(screen.companyworkerlist.route) }
+            .clickable { navController.navigate(screen.workerselfinfo.route) }
 
             .background(Color.Green)
             .padding(10.dp)
+
             ,
         ) {
 
-            Icon(imageVector = Icons.Filled.Face, contentDescription = "")
+            Icon(imageVector = Icons.Filled.Person2, contentDescription = "")
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "Workers Info", modifier = Modifier.weight(1f))
+            Text(text = "Worker's Details", modifier = Modifier.weight(1f))
 
         }
         Spacer(modifier = Modifier.height(6.dp))
-        Row(modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth()
-//            .height(10.dp)
-            .clickable { navController.navigate(screen.companydetails.route) }
 
-            .background(Color.Green)
-            .padding(10.dp)
-            ,
-        ) {
 
-            Icon(imageVector = Icons.Filled.Place, contentDescription = "")
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "Company Details", modifier = Modifier.weight(1f))
 
-        }
 
 
     }
